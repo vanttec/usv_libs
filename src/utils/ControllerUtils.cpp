@@ -1,10 +1,20 @@
 #include "ControllerUtils.h"
 
-std::pair<DynamicModelOutput, ASMCOutput> ControllerUtils::update(DynamicModel &model, ASMC &controller, ASMCSetpoint &setpoint) {
+std::pair<DynamicModelOutput, ASMCOutput> ControllerUtils::update(DynamicModel &model, ASMC &controller, const ASMCSetpoint &setpoint) {
   auto state = fromModel(model);
   auto asmcOut = controller.update(state, setpoint);
   auto modelOut = model.update(asmcOut.left_thruster, asmcOut.right_thruster);
   return {modelOut, asmcOut};
+}
+
+std::pair<DynamicModelOutput, ASMCOutput>
+ControllerUtils::update_n(DynamicModel &model, ASMC &controller, const ASMCSetpoint &setpoint, int n) {
+  std::pair<DynamicModelOutput, ASMCOutput> out;
+  for(int i = 0; i < n; i++){
+    out = update(model, controller, setpoint);
+  }
+
+  return out;
 }
 
 ASMCState ControllerUtils::fromModel(const DynamicModel &model) {
