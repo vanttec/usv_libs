@@ -9,7 +9,10 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get install libeigen3-dev
       - uses: actions/checkout@v1
-      - uses: textbook/git-checkout-submodule-action@master
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: configure
         run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Werror" ..
       - name: make
