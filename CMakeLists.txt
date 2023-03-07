@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 3.24)
+project(usv_libs)
+
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/b796f7d44681514f58a683a3a71ff17c94edb0c1.zip
+)
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+
+set(CMAKE_CXX_STANDARD 17)
+set(USV_LIBS_SRC src/control/ASMC.cpp src/model/dynamic_model.cpp src/utils/ControllerUtils.cpp)
+
+include_directories(src)
+add_library(usv_libs ${USV_LIBS_SRC})
+target_link_libraries(usv_libs Eigen3::Eigen)
+
+include(GoogleTest)
+file(GLOB_RECURSE USV_TEST_SOURCES test/*.cpp)
+add_executable(USV_Tests ${USV_TEST_SOURCES} ${USV_LIBS_SRC})
+target_link_libraries(USV_Tests GTest::gtest_main Eigen3::Eigen)
+target_include_directories(USV_Tests PRIVATE src/)
+gtest_discover_tests(USV_Tests)
