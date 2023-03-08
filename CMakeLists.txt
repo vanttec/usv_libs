@@ -26,6 +26,13 @@ pybind11_add_module(usv_libs_py python/python_bindings.cpp)
 target_include_directories(usv_libs_py PRIVATE src)
 target_link_libraries(usv_libs_py PRIVATE usv_libs)
 
+install(
+        TARGETS
+        usv_libs_py
+        LIBRARY
+        DESTINATION usv_libs_py
+)
+
 # Unit test
 include(GoogleTest)
 file(GLOB_RECURSE USV_TEST_SOURCES test/*.cpp)

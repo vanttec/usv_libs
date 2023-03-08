@@ -48,6 +48,15 @@ PYBIND11_MODULE(usv_libs_py, m){
           .def(py::init<double,double,double>())
           .def("update", &DynamicModel::update);
 
+  py::class_<DynamicModelOutput>(model, "DynamicModelOutput")
+          .def(py::init<>())
+          .def_readwrite("pose_x", &DynamicModelOutput::pose_x)
+          .def_readwrite("pose_y", &DynamicModelOutput::pose_y)
+          .def_readwrite("pose_psi", &DynamicModelOutput::pose_psi)
+          .def_readwrite("vel_x", &DynamicModelOutput::vel_x)
+          .def_readwrite("vel_y", &DynamicModelOutput::vel_y)
+          .def_readwrite("vel_r", &DynamicModelOutput::vel_r);
+
   py::module utils = m.def_submodule("utils", "Utility functions");
   utils.def("update_controller_and_model", &ControllerUtils::update);
   utils.def("update_controller_and_model_n", &ControllerUtils::update_n);
