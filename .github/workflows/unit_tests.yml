@@ -19,3 +19,5 @@ jobs:
         run: cd build && make
       - name: Run Test
         run: build/USV_Tests
+      - name: Check python setup.py
+        run: pip install .
