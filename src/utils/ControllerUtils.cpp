@@ -7,14 +7,20 @@ std::pair<DynamicModelOutput, ASMCOutput> ControllerUtils::update(DynamicModel &
   return {modelOut, asmcOut};
 }
 
-std::pair<DynamicModelOutput, ASMCOutput>
-ControllerUtils::update_n(DynamicModel &model, ASMC &controller, const ASMCSetpoint &setpoint, int n) {
-  std::pair<DynamicModelOutput, ASMCOutput> out;
+std::pair<std::vector<DynamicModelOutput>, std::vector<ASMCOutput>>
+ControllerUtils::update_n(DynamicModel &model, ASMC &controller, ASMCSetpoint setpoint, int n) {
+  double angularVel = setpoint.heading_setpoint / static_cast<double>(n);
+  setpoint.heading_setpoint = model.currentState().pose_psi;
+  std::vector<DynamicModelOutput> modelOutput(n);
+  std::vector<ASMCOutput> asmcOutput(n);
+
   for(int i = 0; i < n; i++){
-    out = update(model, controller, setpoint);
+    // Update theta by angular vel
+    setpoint.heading_setpoint += angularVel;
+    std::tie(modelOutput[i], asmcOutput[i]) = update(model, controller, setpoint);
   }
 
-  return out;
+  return {modelOutput, asmcOutput};
 }
 
 ASMCState ControllerUtils::fromModel(const DynamicModel &model) {

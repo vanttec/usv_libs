@@ -159,8 +159,8 @@ ASMCOutput ASMC::update(const ASMCState &s, const ASMCSetpoint &setpoint) {
   out.speed_sigma = sigma_u;
 
   out.heading_gain = Ka_psi;
-  out.speed_error = e_psi;
-  out.speed_sigma = sigma_psi;
+  out.heading_error = e_psi;
+  out.heading_sigma = sigma_psi;
 
   out.Tx = Tx;
   out.Tz = Tz;

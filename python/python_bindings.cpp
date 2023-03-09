@@ -2,6 +2,7 @@
 #include "control/ASMC.h"
 #include "utils/ControllerUtils.h"
 #include "model/dynamic_model.h"
+#include <pybind11/stl.h>
 
 namespace py = pybind11;
 PYBIND11_MODULE(usv_libs_py, m){
