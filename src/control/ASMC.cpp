@@ -162,6 +162,9 @@ ASMCOutput ASMC::update(const ASMCState &s, const ASMCSetpoint &setpoint) {
   out.heading_error = e_psi;
   out.heading_sigma = sigma_psi;
 
+  out.speed_setpoint = u_d;
+  out.heading_setpoint = psi_d;
+
   out.Tx = Tx;
   out.Tz = Tz;
 

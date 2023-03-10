@@ -32,6 +32,7 @@ struct ASMCOutput{
   double left_thruster, right_thruster;
 
   // Debug data
+  double speed_setpoint, heading_setpoint;
   double speed_gain, speed_error, speed_sigma;
   double heading_gain, heading_error, heading_sigma;
   double Tx, Tz;

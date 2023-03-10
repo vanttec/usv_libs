@@ -36,7 +36,9 @@ PYBIND11_MODULE(usv_libs_py, m){
           .def_readonly("heading_error", &ASMCOutput::heading_error)
           .def_readonly("heading_sigma", &ASMCOutput::heading_sigma)
           .def_readonly("Tx", &ASMCOutput::Tx)
-          .def_readonly("Tz", &ASMCOutput::Tz);
+          .def_readonly("Tz", &ASMCOutput::Tz)
+          .def_readonly("speed_setpoint", &ASMCOutput::speed_setpoint)
+          .def_readonly("heading_setpoint", &ASMCOutput::heading_setpoint);
 
   py::class_<ASMC>(controller, "ASMC")
           .def(py::init<ASMCParams>())

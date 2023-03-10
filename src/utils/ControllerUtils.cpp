@@ -9,14 +9,20 @@ std::pair<DynamicModelOutput, ASMCOutput> ControllerUtils::update(DynamicModel &
 
 std::pair<std::vector<DynamicModelOutput>, std::vector<ASMCOutput>>
 ControllerUtils::update_n(DynamicModel &model, ASMC &controller, ASMCSetpoint setpoint, int n) {
+  // Use heading setpoint struct as angular vel, use velocity as acceleration TESTING TESTING
   double angularVel = setpoint.heading_setpoint / static_cast<double>(n);
   setpoint.heading_setpoint = model.currentState().pose_psi;
+
+  double acceleration = setpoint.velocity_setpoint / static_cast<double>(n);
+  setpoint.velocity_setpoint = model.currentState().vel_x;
+
   std::vector<DynamicModelOutput> modelOutput(n);
   std::vector<ASMCOutput> asmcOutput(n);
 
   for(int i = 0; i < n; i++){
     // Update theta by angular vel
-    setpoint.heading_setpoint += angularVel;
+    setpoint.heading_setpoint = model.currentState().pose_psi + angularVel;
+    setpoint.velocity_setpoint = std::clamp(model.currentState().vel_x + acceleration, 0.1, 0.4);
     std::tie(modelOutput[i], asmcOutput[i]) = update(model, controller, setpoint);
   }
 
