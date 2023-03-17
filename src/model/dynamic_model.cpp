@@ -6,6 +6,7 @@
 
 DynamicModel::DynamicModel(double pose_x, double pose_y, double pose_psi) {
   eta(0) = pose_x; eta(1) = pose_y; eta(2) = pose_psi;
+  state.pose_x = pose_x; state.pose_y = pose_y; state.pose_psi = pose_psi;
   M << m - X_u_dot, 0, 0, 0, m - Y_v_dot, 0 - Y_r_dot, 0, 0 - N_v_dot,
           Iz - N_r_dot;
 }

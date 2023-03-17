@@ -8,8 +8,8 @@
 #include <Eigen/Dense>
 
 struct DynamicModelOutput{
-  double pose_x, pose_y, pose_psi;
-  double vel_x, vel_y, vel_r;
+  double pose_x{0}, pose_y{0}, pose_psi{0};
+  double vel_x{0}, vel_y{0}, vel_r{0};
 };
 
 class DynamicModel {
@@ -51,7 +51,7 @@ private:
   Eigen::Vector3f eta_dot_last = Eigen::Vector3f::Zero();
   Eigen::Matrix3f M;
 
-  DynamicModelOutput state;
+  DynamicModelOutput state{};
 };
 
 
