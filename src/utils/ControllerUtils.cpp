@@ -21,8 +21,10 @@ ControllerUtils::update_n(DynamicModel &model, ASMC &controller, ASMCSetpoint se
 
   for(int i = 0; i < n; i++){
     // Update theta by angular vel
-    setpoint.heading_setpoint = model.currentState().pose_psi + angularVel;
-    setpoint.velocity_setpoint = std::clamp(model.currentState().vel_x + acceleration, 0.1, 0.4);
+    setpoint.heading_setpoint += angularVel;
+    //setpoint.heading_setpoint = ASMC::constrainAngle(setpoint.heading_setpoint);
+    setpoint.velocity_setpoint += acceleration;
+    setpoint.velocity_setpoint = std::clamp(setpoint.velocity_setpoint, 0.2, 0.75);
     std::tie(modelOutput[i], asmcOutput[i]) = update(model, controller, setpoint);
   }
 

@@ -20,6 +20,9 @@ public:
   [[nodiscard]] const DynamicModelOutput& currentState() const {
     return state;
   }
+
+  static double constrainAngle(double angle);
+
 private:
   //Model parameters
   constexpr static const double X_u_dot = -2.25;

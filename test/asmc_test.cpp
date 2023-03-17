@@ -12,7 +12,7 @@ protected:
 
   DynamicModel model{};
   ASMC controller{ASMC::defaultParams()};
-  const int n = 1000;
+  const int n = 5000;
 };
 
 TEST_F(ASMCTest, ReachesVelocityAndHeading){

@@ -49,7 +49,8 @@ PYBIND11_MODULE(usv_libs_py, m){
   py::class_<DynamicModel>(model, "DynamicModel")
           .def(py::init<>())
           .def(py::init<double,double,double>())
-          .def("update", &DynamicModel::update);
+          .def("update", &DynamicModel::update)
+          .def("currentState", &DynamicModel::currentState);
 
   py::class_<DynamicModelOutput>(model, "DynamicModelOutput")
           .def(py::init<>())
