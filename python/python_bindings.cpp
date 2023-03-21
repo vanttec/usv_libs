@@ -23,7 +23,23 @@ PYBIND11_MODULE(usv_libs_py, m){
   py::class_<ASMCSetpoint>(controller, "ASMCSetpoint")
           .def(py::init())
           .def_readwrite("heading", &ASMCSetpoint::heading_setpoint)
-          .def_readwrite("velocity", &ASMCSetpoint::velocity_setpoint);
+          .def_readwrite("velocity", &ASMCSetpoint::velocity_setpoint)
+          .def(py::pickle(
+                  [](const ASMCSetpoint &s){ //__getstate__
+                    return py::make_tuple(s.heading_setpoint, s.velocity_setpoint);
+                  },
+                  [](py::tuple t){  // __setstate__
+                    if(t.size() != 2){
+                      throw std::runtime_error("Invalid state!");
+                    }
+
+                    ASMCSetpoint s{};
+                    s.heading_setpoint = t[0].cast<double>();
+                    s.velocity_setpoint = t[1].cast<double>();
+
+                    return s;
+                  }
+                  ));
 
   py::class_<ASMCOutput>(controller, "ASMCOutput")
           .def(py::init())
@@ -38,7 +54,32 @@ PYBIND11_MODULE(usv_libs_py, m){
           .def_readonly("Tx", &ASMCOutput::Tx)
           .def_readonly("Tz", &ASMCOutput::Tz)
           .def_readonly("speed_setpoint", &ASMCOutput::speed_setpoint)
-          .def_readonly("heading_setpoint", &ASMCOutput::heading_setpoint);
+          .def_readonly("heading_setpoint", &ASMCOutput::heading_setpoint)
+          .def(py::pickle(
+                  [](const ASMCOutput &o){
+                    return py::make_tuple(o.left_thruster, o.right_thruster, o.speed_gain, o.speed_error,
+                                          o.speed_sigma, o.heading_gain, o.heading_error, o.heading_sigma,
+                                          o.Tx, o.Tz, o.speed_setpoint, o.heading_setpoint);
+                  },
+                  [](py::tuple t){
+                    if (t.size() != 12)
+                      throw std::runtime_error("Invalid state, tuple size expected to be 12.");
+                    ASMCOutput o{};
+                    o.left_thruster = t[0].cast<double>();
+                    o.right_thruster = t[1].cast<double>();
+                    o.speed_gain = t[2].cast<double>();
+                    o.speed_error = t[3].cast<double>();
+                    o.speed_sigma = t[4].cast<double>();
+                    o.heading_gain = t[5].cast<double>();
+                    o.heading_error = t[6].cast<double>();
+                    o.heading_sigma = t[7].cast<double>();
+                    o.Tx = t[8].cast<double>();
+                    o.Tz = t[9].cast<double>();
+                    o.speed_setpoint = t[10].cast<double>();
+                    o.heading_setpoint = t[11].cast<double>();
+                    return o;
+                  }
+                  ));
 
   py::class_<ASMC>(controller, "ASMC")
           .def(py::init<ASMCParams>())
