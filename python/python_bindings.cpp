@@ -100,7 +100,22 @@ PYBIND11_MODULE(usv_libs_py, m){
           .def_readwrite("pose_psi", &DynamicModelOutput::pose_psi)
           .def_readwrite("vel_x", &DynamicModelOutput::vel_x)
           .def_readwrite("vel_y", &DynamicModelOutput::vel_y)
-          .def_readwrite("vel_r", &DynamicModelOutput::vel_r);
+          .def_readwrite("vel_r", &DynamicModelOutput::vel_r)
+          .def(py::pickle(
+                  [](const DynamicModelOutput &o){
+                    return py::make_tuple(o.pose_x, o.pose_y, o.pose_psi, o.vel_x, o.vel_y, o.vel_r);
+                  },
+                  [](py::tuple t) {
+                    DynamicModelOutput o;
+                    o.pose_x = t[0].cast<double>();
+                    o.pose_y = t[1].cast<double>();
+                    o.pose_psi = t[2].cast<double>();
+                    o.vel_x = t[3].cast<double>();
+                    o.vel_y = t[4].cast<double>();
+                    o.vel_r = t[5].cast<double>();
+                    return o;
+                  }
+          ));
 
   py::module utils = m.def_submodule("utils", "Utility functions");
   utils.def("update_controller_and_model", &ControllerUtils::update);
