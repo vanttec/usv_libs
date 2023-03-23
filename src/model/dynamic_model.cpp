@@ -6,6 +6,7 @@
 
 DynamicModel::DynamicModel(double pose_x, double pose_y, double pose_psi) {
   eta(0) = pose_x; eta(1) = pose_y; eta(2) = pose_psi;
+  state.pose_x = pose_x; state.pose_y = pose_y; state.pose_psi = pose_psi;
   M << m - X_u_dot, 0, 0, 0, m - Y_v_dot, 0 - Y_r_dot, 0, 0 - N_v_dot,
           Iz - N_r_dot;
 }
@@ -73,7 +74,7 @@ DynamicModelOutput DynamicModel::update(double leftThruster, double rightThruste
   eta = integral_step * (eta_dot + eta_dot_last) / 2 + eta;  // integral
   eta_dot_last = eta_dot;
 
-  DynamicModelOutput out;
+  DynamicModelOutput out{};
   out.pose_x = eta(0);
   out.pose_y = eta(1);
   out.pose_psi = eta(2);
@@ -84,4 +85,14 @@ DynamicModelOutput DynamicModel::update(double leftThruster, double rightThruste
 
   state = out;
   return out;
+}
+
+double DynamicModel::constrainAngle(double angle) {
+  angle = std::copysign(std::fmod(angle, 2 * M_PI), angle);
+  if (angle > M_PI) {
+    angle -= 2 * M_PI;
+  } else if (angle < -M_PI) {
+    angle += 2 * M_PI;
+  }
+  return angle;
 }

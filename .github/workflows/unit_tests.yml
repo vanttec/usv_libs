@@ -9,9 +9,15 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get install libeigen3-dev
       - uses: actions/checkout@v1
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: configure
         run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Werror" ..
       - name: make
         run: cd build && make
       - name: Run Test
         run: build/USV_Tests
+      - name: Check python setup.py
+        run: pip install .
