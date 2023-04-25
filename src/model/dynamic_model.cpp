@@ -79,9 +79,9 @@ DynamicModelOutput DynamicModel::update(double leftThruster, double rightThruste
   out.pose_y = eta(1);
   out.pose_psi = eta(2);
 
-  out.vel_x = upsilon(0);
-  out.vel_y = upsilon(1);
-  out.vel_r = upsilon(2);
+  out.u = upsilon(0);
+  out.v = upsilon(1);
+  out.r = upsilon(2);
 
   state = out;
   return out;

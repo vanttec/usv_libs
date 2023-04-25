@@ -9,7 +9,7 @@
 
 struct DynamicModelOutput{
   double pose_x{0}, pose_y{0}, pose_psi{0};
-  double vel_x{0}, vel_y{0}, vel_r{0};
+  double u{0}, v{0}, r{0};
 };
 
 class DynamicModel {

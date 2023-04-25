@@ -25,7 +25,7 @@ TEST_F(ASMCTest, ReachesVelocityAndHeading){
     std::tie(modelState, out) = ControllerUtils::update(model, controller, setpoint);
   }
 
-  EXPECT_NEAR(modelState.vel_x, setpoint.velocity_setpoint, 0.1);
+  EXPECT_NEAR(modelState.u, setpoint.velocity_setpoint, 0.1);
   EXPECT_NEAR(modelState.pose_psi, setpoint.heading_setpoint, 0.5);
 }
 
@@ -41,6 +41,6 @@ TEST_F(ASMCTest, UpdateNReachesVelAndHeading){
   std::vector<ASMCOutput> asmcOutputs;
   std::tie(modelStates, asmcOutputs) = ControllerUtils::update_n(model, controller, setpoint, n);
 
-  EXPECT_GT(modelStates[n-1].vel_x, 0);
+  EXPECT_GT(modelStates[n-1].u, 0);
   EXPECT_GT(modelStates[n-1].pose_psi, 0);
 }

@@ -22,11 +22,13 @@ struct ASMCSetpoint {
   double heading_setpoint, velocity_setpoint;
 };
 
+// TODO Switch over to vanttec::ControllerState
 struct ASMCState {
   double vel_x, vel_y, vel_r;
   double theta;
 };
 
+// TODO Switch over to vanttec::ControllerOutput
 struct ASMCOutput {
   // Main output data, left and right thruster
   double left_thruster, right_thruster;

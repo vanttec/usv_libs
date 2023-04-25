@@ -23,9 +23,9 @@ TEST_F(DynamicModelTest, StaticTest){
   EXPECT_NEAR(out.pose_y, 0, tol);
   EXPECT_NEAR(out.pose_psi, 0, tol);
 
-  EXPECT_NEAR(out.vel_x, 0, tol);
-  EXPECT_NEAR(out.vel_y, 0, tol);
-  EXPECT_NEAR(out.vel_r, 0, tol);
+  EXPECT_NEAR(out.u, 0, tol);
+  EXPECT_NEAR(out.v, 0, tol);
+  EXPECT_NEAR(out.r, 0, tol);
 }
 
 TEST_F(DynamicModelTest, MoveForward){
@@ -38,7 +38,7 @@ TEST_F(DynamicModelTest, MoveForward){
   EXPECT_NEAR(out.pose_y, 0, tol);
   EXPECT_NEAR(out.pose_psi, 0, tol);
 
-  EXPECT_NE(out.vel_x, 0);
-  EXPECT_NEAR(out.vel_y, 0, tol);
-  EXPECT_NEAR(out.vel_r, 0, tol);
+  EXPECT_NE(out.u, 0);
+  EXPECT_NEAR(out.v, 0, tol);
+  EXPECT_NEAR(out.r, 0, tol);
 }

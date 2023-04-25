@@ -38,7 +38,7 @@ ASMCOutput ASMC::update(const ASMCState &s, const ASMCSetpoint &setpoint) {
     Xuu = -70.92;
   }
 
-  double Nr = 0.02 * (-3.141592 * 1000) * std::hypot(u, v) * 0.09 * 0.09 * 1.01 * 1.01;
+  double Nr = 0.02 * (-M_PI * 1000) * std::hypot(u, v) * 0.09 * 0.09 * 1.01 * 1.01;
 
   // Rewrite USV model in simplified components f and g
   double g_u = 1 / (m - X_u_dot);
@@ -90,8 +90,8 @@ ASMCOutput ASMC::update(const ASMCState &s, const ASMCSetpoint &setpoint) {
   double Tport = (Tx / 2.0) + (Tz / B);
   double Tstbd = (Tx / (2 * c)) - (Tz / (B * c));
 
-  Tport = std::clamp(Tport, -30.0, 30.0);
-  Tstbd = std::clamp(Tstbd, -30.0, 30.0);
+  Tport = std::clamp(Tport, -30.0, 36.0);
+  Tstbd = std::clamp(Tstbd, -30.0, 36.0);
 
   ASMCOutput out{};
   out.left_thruster = Tport;
@@ -128,7 +128,7 @@ double ASMC::constrainAngle(double angle) {
 ASMCParams ASMC::defaultParams() {
   ASMCParams p{};
   p.k_u = 0.1;
-  p.k_psi = 0.2;
+  p.k_psi = 0.175;
   p.kmin_u = 0.05;
   p.kmin_psi = 0.2;
   p.k2_u = 0.02;

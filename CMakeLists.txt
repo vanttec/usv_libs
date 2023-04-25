@@ -15,7 +15,7 @@ find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 add_subdirectory(pybind11)
 
 set(CMAKE_CXX_STANDARD 17)
-set(USV_LIBS_SRC src/control/ASMC.cpp src/model/dynamic_model.cpp src/utils/ControllerUtils.cpp)
+set(USV_LIBS_SRC src/control/ASMC.cpp src/control/AITSMC.cpp src/model/dynamic_model.cpp src/utils/ControllerUtils.cpp)
 
 # Library compilation
 include_directories(src)

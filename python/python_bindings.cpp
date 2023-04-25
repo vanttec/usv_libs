@@ -3,6 +3,8 @@
 #include "utils/ControllerUtils.h"
 #include "model/dynamic_model.h"
 #include <pybind11/stl.h>
+#include "control/datatypes.h"
+#include "control/AITSMC.h"
 
 namespace py = pybind11;
 PYBIND11_MODULE(usv_libs_py, m){
@@ -98,21 +100,21 @@ PYBIND11_MODULE(usv_libs_py, m){
           .def_readwrite("pose_x", &DynamicModelOutput::pose_x)
           .def_readwrite("pose_y", &DynamicModelOutput::pose_y)
           .def_readwrite("pose_psi", &DynamicModelOutput::pose_psi)
-          .def_readwrite("vel_x", &DynamicModelOutput::vel_x)
-          .def_readwrite("vel_y", &DynamicModelOutput::vel_y)
-          .def_readwrite("vel_r", &DynamicModelOutput::vel_r)
+          .def_readwrite("u", &DynamicModelOutput::u)
+          .def_readwrite("v", &DynamicModelOutput::v)
+          .def_readwrite("r", &DynamicModelOutput::r)
           .def(py::pickle(
                   [](const DynamicModelOutput &o){
-                    return py::make_tuple(o.pose_x, o.pose_y, o.pose_psi, o.vel_x, o.vel_y, o.vel_r);
+                    return py::make_tuple(o.pose_x, o.pose_y, o.pose_psi, o.u, o.v, o.r);
                   },
                   [](py::tuple t) {
                     DynamicModelOutput o;
                     o.pose_x = t[0].cast<double>();
                     o.pose_y = t[1].cast<double>();
                     o.pose_psi = t[2].cast<double>();
-                    o.vel_x = t[3].cast<double>();
-                    o.vel_y = t[4].cast<double>();
-                    o.vel_r = t[5].cast<double>();
+                    o.u = t[3].cast<double>();
+                    o.v = t[4].cast<double>();
+                    o.r = t[5].cast<double>();
                     return o;
                   }
           ));
@@ -120,4 +122,59 @@ PYBIND11_MODULE(usv_libs_py, m){
   py::module utils = m.def_submodule("utils", "Utility functions");
   utils.def("update_controller_and_model", &ControllerUtils::update);
   utils.def("update_controller_and_model_n", &ControllerUtils::update_n);
+
+  using namespace vanttec;
+  py::class_<ControllerOutput>(controller, "ControllerOutput")
+          .def(py::init())
+          .def_readwrite("left_thruster", &ControllerOutput::left_thruster)
+          .def_readwrite("right_thruster", &ControllerOutput::right_thruster)
+          .def_readwrite("Tx", &ControllerOutput::Tx)
+          .def_readwrite("Tz", &ControllerOutput::Tz);
+
+  py::class_<ControllerState>(controller, "ControllerState")
+          .def(py::init())
+          .def_readwrite("u", &ControllerState::u)
+          .def_readwrite("v", &ControllerState::v)
+          .def_readwrite("r", &ControllerState::r)
+          .def_readwrite("psi", &ControllerState::psi);
+
+  py::class_<AITSMCParams>(controller, "AITSMCParams")
+          .def(py::init())
+          .def_readwrite("k_u", &AITSMCParams::k_u)
+          .def_readwrite("k_r", &AITSMCParams::k_r)
+          .def_readwrite("kmin_u", &AITSMCParams::kmin_u)
+          .def_readwrite("kmin_r", &AITSMCParams::kmin_r)
+          .def_readwrite("k2_u", &AITSMCParams::k2_u)
+          .def_readwrite("k2_r", &AITSMCParams::k2_r)
+          .def_readwrite("mu_u", &AITSMCParams::mu_u)
+          .def_readwrite("mu_r", &AITSMCParams::mu_r)
+          .def_readwrite("tc_u", &AITSMCParams::tc_u)
+          .def_readwrite("tc_r", &AITSMCParams::tc_r)
+          .def_readwrite("q_u", &AITSMCParams::q_u)
+          .def_readwrite("q_r", &AITSMCParams::q_r)
+          .def_readwrite("p_u", &AITSMCParams::p_u)
+          .def_readwrite("p_r", &AITSMCParams::p_r);
+
+  py::class_<AITSMCDebugData>(controller, "AITSMCDebugData")
+          .def(py::init())
+          .def_readonly("e_u", &AITSMCDebugData::e_u)
+          .def_readonly("e_r", &AITSMCDebugData::e_r)
+          .def_readonly("s_u", &AITSMCDebugData::s_u)
+          .def_readonly("s_r", &AITSMCDebugData::s_r)
+          .def_readonly("Ka_u", &AITSMCDebugData::Ka_u)
+          .def_readonly("Ka_r", &AITSMCDebugData::Ka_r)
+          .def_readonly("Tx", &AITSMCDebugData::Tx)
+          .def_readonly("Tz", &AITSMCDebugData::Tz);
+
+  py::class_<AITSMCSetpoint>(controller, "AITSMCSetpoint")
+          .def(py::init())
+          .def_readwrite("u", &AITSMCSetpoint::u)
+          .def_readwrite("r", &AITSMCSetpoint::r)
+          .def_readwrite("dot_u", &AITSMCSetpoint::dot_u)
+          .def_readwrite("dot_r", &AITSMCSetpoint::dot_r);
+
+  py::class_<AITSMC>(controller, "AITSMC")
+          .def(py::init<AITSMCParams>())
+          .def("defaultParams", &AITSMC::defaultParams)
+          .def("update", &AITSMC::update);
 }
