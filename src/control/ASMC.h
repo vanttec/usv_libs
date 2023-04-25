@@ -6,16 +6,8 @@
 #define USV_ROS2_ASMC_H
 
 struct ASMCParams {
-  double k_u,
-          k_psi,
-          kmin_u,
-          kmin_psi,
-          k2_u,
-          k2_psi,
-          mu_u,
-          mu_psi,
-          lambda_u,
-          lambda_psi;
+  double k_u, k_psi, kmin_u, kmin_psi, k2_u, k2_psi, mu_u, mu_psi, lambda_u,
+      lambda_psi;
 };
 
 struct ASMCSetpoint {
@@ -41,7 +33,7 @@ struct ASMCOutput {
 };
 
 class ASMC {
-public:
+ public:
   explicit ASMC(const ASMCParams &params);
 
   ASMCOutput update(const ASMCState &s, const ASMCSetpoint &setpoint);
@@ -51,11 +43,12 @@ public:
 
   static double constrainAngle(double angle);
 
-private:
+ private:
   ASMCParams p;
   double e_u_last{0}, e_u_int{0};
   double psi_d_last{0};
-  double o_last{0}, o_dot_last{0}, o_dot_dot_last{0}, o_dot{0}, o_dot_dot{0}, o{0};
+  double o_last{0}, o_dot_last{0}, o_dot_dot_last{0}, o_dot{0}, o_dot_dot{0},
+      o{0};
 
   double ka_psi{0}, ka_u{0};
   double ka_dot_u_last{0}, ka_dot_psi_last{0};
@@ -66,9 +59,9 @@ private:
   constexpr static const double m = 30;
   constexpr static const double Iz = 4.1;
   constexpr static const double B = 0.41;
-  constexpr static const double c = 0.78;;
+  constexpr static const double c = 0.78;
 
-  //Second order filter gains (for r_d)
+  // Second order filter gains (for r_d)
   constexpr static const double f1 = 2.0;
   constexpr static const double f2 = 2.0;
   constexpr static const double f3 = 2.0;
@@ -76,5 +69,4 @@ private:
   constexpr static const double integral_step = 0.01;
 };
 
-
-#endif //USV_ROS2_ASMC_H
+#endif  // USV_ROS2_ASMC_H

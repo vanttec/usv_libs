@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.1)
 project(usv_libs)
 
 include(FetchContent)
@@ -7,11 +7,13 @@ FetchContent_Declare(
         URL https://github.com/google/googletest/archive/b796f7d44681514f58a683a3a71ff17c94edb0c1.zip
 )
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
+find_package (Python3 COMPONENTS Interpreter Development)
 add_subdirectory(pybind11)
 
 set(CMAKE_CXX_STANDARD 17)
