@@ -120,6 +120,7 @@ PYBIND11_MODULE(usv_libs_py, m){
           ));
 
   py::module utils = m.def_submodule("utils", "Utility functions");
+  utils.def("from_model", &ControllerUtils::fromModel);
   utils.def("update_controller_and_model", &ControllerUtils::update);
   utils.def("update_controller_and_model_n", &ControllerUtils::update_n);
 
