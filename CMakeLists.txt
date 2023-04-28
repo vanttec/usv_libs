@@ -18,7 +18,7 @@ set(PYBIND11_FINDPYTHON ON)
 add_subdirectory(pybind11)
 
 set(CMAKE_CXX_STANDARD 17)
-set(USV_LIBS_SRC src/control/ASMC.cpp src/control/AITSMC.cpp src/model/dynamic_model.cpp src/utils/ControllerUtils.cpp)
+set(USV_LIBS_SRC src/control/ASMC.cpp src/control/AITSMC.cpp src/model/dynamic_model.cpp src/utils/ControllerUtils.cpp src/perturbances/wind_and_waves.cpp)
 
 # Library compilation
 include_directories(src)

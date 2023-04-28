@@ -14,7 +14,7 @@ protected:
 
 TEST_F(DynamicModelTest, StaticTest){
   //Boat should stay relatively still when no thruster output is applied
-  DynamicModelOutput out{};
+  ModelState out{};
   for(int i = 0; i < n; i++){
     out = model.update(0, 0);
   }
@@ -29,7 +29,7 @@ TEST_F(DynamicModelTest, StaticTest){
 }
 
 TEST_F(DynamicModelTest, MoveForward){
-  DynamicModelOutput out{};
+  ModelState out{};
   for(int i = 0; i < n; i++){
     out = model.update(5, 5);
   }

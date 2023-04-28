@@ -37,4 +37,9 @@ namespace vanttec{
     }
 
   };
+
+  struct ModelState{
+    double pose_x{0}, pose_y{0}, pose_psi{0};
+    double u{0}, v{0}, r{0};
+  };
 }

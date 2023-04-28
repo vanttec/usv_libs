@@ -15,7 +15,7 @@ DynamicModel::DynamicModel() : DynamicModel(0, 0, 0) {
   ;
 }
 
-DynamicModelOutput DynamicModel::update(double leftThruster, double rightThruster) {
+ModelState DynamicModel::update(double leftThruster, double rightThruster) {
   double Xu = -25;
   double Xuu = 0;
   auto upsilon_abs = upsilon.cwiseAbs();
@@ -74,7 +74,7 @@ DynamicModelOutput DynamicModel::update(double leftThruster, double rightThruste
   eta = integral_step * (eta_dot + eta_dot_last) / 2 + eta;  // integral
   eta_dot_last = eta_dot;
 
-  DynamicModelOutput out{};
+  ModelState out{};
   out.pose_x = eta(0);
   out.pose_y = eta(1);
   out.pose_psi = eta(2);

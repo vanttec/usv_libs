@@ -1,13 +1,13 @@
 #include "ControllerUtils.h"
 
-std::pair<DynamicModelOutput, ASMCOutput> ControllerUtils::update(DynamicModel &model, ASMC &controller, const ASMCSetpoint &setpoint) {
+std::pair<ModelState, ASMCOutput> ControllerUtils::update(DynamicModel &model, ASMC &controller, const ASMCSetpoint &setpoint) {
   auto state = fromModelASMC(model);
   auto asmcOut = controller.update(state, setpoint);
   auto modelOut = model.update(asmcOut.left_thruster, asmcOut.right_thruster);
   return {modelOut, asmcOut};
 }
 
-std::pair<std::vector<DynamicModelOutput>, std::vector<ASMCOutput>>
+std::pair<std::vector<ModelState>, std::vector<ASMCOutput>>
 ControllerUtils::update_n(DynamicModel &model, ASMC &controller, ASMCSetpoint setpoint, int n) {
   // Use heading setpoint struct as angular vel, use velocity as acceleration TESTING TESTING
   double angularVel = setpoint.heading_setpoint / static_cast<double>(n);
@@ -16,7 +16,7 @@ ControllerUtils::update_n(DynamicModel &model, ASMC &controller, ASMCSetpoint se
   double acceleration = setpoint.velocity_setpoint / static_cast<double>(n);
   setpoint.velocity_setpoint = model.currentState().u;
 
-  std::vector<DynamicModelOutput> modelOutput(n);
+  std::vector<ModelState> modelOutput(n);
   std::vector<ASMCOutput> asmcOutput(n);
 
   for(int i = 0; i < n; i++){

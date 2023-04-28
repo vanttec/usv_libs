@@ -6,18 +6,16 @@
 #define USV_ROS2_DYNAMIC_MODEL_H
 
 #include <Eigen/Dense>
+#include "control/datatypes.h"
 
-struct DynamicModelOutput{
-  double pose_x{0}, pose_y{0}, pose_psi{0};
-  double u{0}, v{0}, r{0};
-};
+using namespace vanttec;
 
 class DynamicModel {
 public:
   DynamicModel();
   DynamicModel(double pose_x, double pose_y, double pose_psi);
-  DynamicModelOutput update(double leftThruster, double rightThruster);
-  [[nodiscard]] const DynamicModelOutput& currentState() const {
+  ModelState update(double leftThruster, double rightThruster);
+  [[nodiscard]] const ModelState& currentState() const {
     return state;
   }
 
@@ -51,7 +49,7 @@ private:
   Eigen::Vector3f eta_dot_last = Eigen::Vector3f::Zero();
   Eigen::Matrix3f M;
 
-  DynamicModelOutput state{};
+  ModelState state{};
 };
 
 
