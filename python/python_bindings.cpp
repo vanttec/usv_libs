@@ -177,5 +177,6 @@ PYBIND11_MODULE(usv_libs_py, m){
   py::class_<AITSMC>(controller, "AITSMC")
           .def(py::init<AITSMCParams>())
           .def("defaultParams", &AITSMC::defaultParams)
-          .def("update", &AITSMC::update);
+          .def("update", &AITSMC::update)
+          .def("getDebugData", &AITSMC::getDebugData);
 }
