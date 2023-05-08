@@ -37,7 +37,7 @@ TEST_F(ASMCTest, UpdateNReachesVelAndHeading){
   //Janky code, this is actuall ang vel, and accel
   setpoint.heading_setpoint = M_PI_2;
   setpoint.velocity_setpoint = 0.5;
-  std::vector<DynamicModelOutput> modelStates;
+  std::vector<ModelState> modelStates;
   std::vector<ASMCOutput> asmcOutputs;
   std::tie(modelStates, asmcOutputs) = ControllerUtils::update_n(model, controller, setpoint, n);
 

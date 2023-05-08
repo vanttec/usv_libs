@@ -95,20 +95,20 @@ PYBIND11_MODULE(usv_libs_py, m){
           .def("update", &DynamicModel::update)
           .def("currentState", &DynamicModel::currentState);
 
-  py::class_<DynamicModelOutput>(model, "DynamicModelOutput")
+  py::class_<ModelState>(model, "ModelState")
           .def(py::init<>())
-          .def_readwrite("pose_x", &DynamicModelOutput::pose_x)
-          .def_readwrite("pose_y", &DynamicModelOutput::pose_y)
-          .def_readwrite("pose_psi", &DynamicModelOutput::pose_psi)
-          .def_readwrite("u", &DynamicModelOutput::u)
-          .def_readwrite("v", &DynamicModelOutput::v)
-          .def_readwrite("r", &DynamicModelOutput::r)
+          .def_readwrite("pose_x", &ModelState::pose_x)
+          .def_readwrite("pose_y", &ModelState::pose_y)
+          .def_readwrite("pose_psi", &ModelState::pose_psi)
+          .def_readwrite("u", &ModelState::u)
+          .def_readwrite("v", &ModelState::v)
+          .def_readwrite("r", &ModelState::r)
           .def(py::pickle(
-                  [](const DynamicModelOutput &o){
+                  [](const ModelState &o){
                     return py::make_tuple(o.pose_x, o.pose_y, o.pose_psi, o.u, o.v, o.r);
                   },
                   [](py::tuple t) {
-                    DynamicModelOutput o;
+                    ModelState o;
                     o.pose_x = t[0].cast<double>();
                     o.pose_y = t[1].cast<double>();
                     o.pose_psi = t[2].cast<double>();

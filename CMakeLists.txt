@@ -14,11 +14,11 @@ FetchContent_MakeAvailable(googletest)
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 set(PYBIND11_FINDPYTHON ON)
-#find_package (Python3 COMPONENTS Interpreter Development)
+find_package (Python3 COMPONENTS Interpreter Development)
 add_subdirectory(pybind11)
 
 set(CMAKE_CXX_STANDARD 17)
-set(USV_LIBS_SRC src/control/ASMC.cpp src/control/AITSMC.cpp src/model/dynamic_model.cpp src/utils/ControllerUtils.cpp)
+set(USV_LIBS_SRC src/control/ASMC.cpp src/control/AITSMC.cpp src/model/dynamic_model.cpp src/utils/ControllerUtils.cpp src/perturbances/wind_and_waves.cpp)
 
 # Library compilation
 include_directories(src)
