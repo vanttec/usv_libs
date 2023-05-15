@@ -93,6 +93,7 @@ PYBIND11_MODULE(usv_libs_py, m){
           .def(py::init<>())
           .def(py::init<double,double,double>())
           .def("update", &DynamicModel::update)
+          .def("update_with_perturb", &DynamicModel::update_with_perturb)
           .def("currentState", &DynamicModel::currentState);
 
   py::class_<ModelState>(model, "ModelState")

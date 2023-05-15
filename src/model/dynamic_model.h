@@ -15,6 +15,7 @@ public:
   DynamicModel();
   DynamicModel(double pose_x, double pose_y, double pose_psi);
   ModelState update(double leftThruster, double rightThruster);
+  ModelState update_with_perturb(double leftThruster, double rightThruster, const std::array<double, 3> &T_perturb);
   [[nodiscard]] const ModelState& currentState() const {
     return state;
   }

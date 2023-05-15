@@ -16,6 +16,11 @@ DynamicModel::DynamicModel() : DynamicModel(0, 0, 0) {
 }
 
 ModelState DynamicModel::update(double leftThruster, double rightThruster) {
+  return update_with_perturb(leftThruster, rightThruster, {0, 0, 0});
+}
+
+ModelState DynamicModel::update_with_perturb(double leftThruster, double rightThruster,
+                                             const std::array<double, 3> &T_perturb) {
   double Xu = -25;
   double Xuu = 0;
   auto upsilon_abs = upsilon.cwiseAbs();
@@ -34,7 +39,9 @@ ModelState DynamicModel::update(double leftThruster, double rightThruster) {
   double Nr = 0.02 * (-3.141592 * 1000) * vel * 0.09 * 0.09 * 1.01 * 1.01;
 
   Eigen::Vector3f T;
-  T << leftThruster + c * rightThruster, 0, 0.5 * B * (leftThruster - c * rightThruster);
+  T << leftThruster + c * rightThruster + T_perturb[0],
+        T_perturb[1],
+        0.5 * B * (leftThruster - c * rightThruster) + T_perturb[2];
 
   Eigen::Matrix3f CRB, CA, C;
   CRB << 0, 0, 0 - m * upsilon(1), 0, 0, m * upsilon(0), m * upsilon(1),
