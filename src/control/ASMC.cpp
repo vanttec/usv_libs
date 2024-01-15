@@ -90,6 +90,16 @@ ASMCOutput ASMC::update(const ASMCState &s, const ASMCSetpoint &setpoint) {
   double Tport = (Tx / 2.0) + (Tz / B);
   double Tstbd = (Tx / (2 * c)) - (Tz / (B * c));
 
+  if(setpoint.pivot_enabled == 1){
+    if(Tport > Tstbd){
+      Tstbd = - Tport;
+      Tport/=2;
+    } else {
+      Tport = - Tstbd;
+      Tstbd/=2;
+    }
+  }
+
   Tport = std::clamp(Tport, -30.0, 36.0);
   Tstbd = std::clamp(Tstbd, -30.0, 36.0);
 

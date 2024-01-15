@@ -5,13 +5,15 @@
 #ifndef USV_ROS2_ASMC_H
 #define USV_ROS2_ASMC_H
 
+#include <iostream>
+
 struct ASMCParams {
   double k_u, k_psi, kmin_u, kmin_psi, k2_u, k2_psi, mu_u, mu_psi, lambda_u,
       lambda_psi;
 };
 
 struct ASMCSetpoint {
-  double heading_setpoint, velocity_setpoint;
+  double heading_setpoint, velocity_setpoint, pivot_enabled;
 };
 
 // TODO Switch over to vanttec::ControllerState
