@@ -18,6 +18,7 @@ ASMCOutput ASMC::update(const ASMCState &s, const ASMCSetpoint &setpoint) {
   double psi = s.theta;
 
   double beta = std::asin(v / (0.001 + std::hypot(u, v)));
+  beta = 0;
 
   double psi_d = beta + setpoint.heading_setpoint;
 
@@ -92,11 +93,11 @@ ASMCOutput ASMC::update(const ASMCState &s, const ASMCSetpoint &setpoint) {
 
   if(setpoint.pivot_enabled == 1){
     if(Tport > Tstbd){
-      Tstbd = - Tport;
-      Tport/=2;
+      Tstbd = - 5*Tport;
+      Tport/=10; // 2
     } else {
-      Tport = - Tstbd;
-      Tstbd/=2;
+      Tport = - 5*Tstbd;
+      Tstbd/=10; // 2
     }
   }
 
