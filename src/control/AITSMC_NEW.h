@@ -21,13 +21,13 @@ struct AITSMCNEWParams {
 };
 
 struct AITSMCNEWSetpoint{
-  double u{0}, psi{0};
+  double u{0}, psi{0}, psi_dot{0};
   double dot_u{0}, dot_r{0};
 };
 
 struct AITSMCNEWDebugData {
   double e_u{0}, e_psi{0};
-  double edot_psi{0};
+  double edot_psi{0}, ei_psi{0};
   double s_u{0}, s_psi{0};
   double Ka_u{0}, Ka_psi{0};
   double Tx{0}, Tz{0};

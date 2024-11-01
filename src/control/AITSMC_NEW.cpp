@@ -57,6 +57,7 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
 
   double e_u = setpoint.u - s.u;
   double e_psi = angle_dist(setpoint.psi, s.psi);
+  // e_psi = setpoint.psi - s.psi;
 
   double sign_u = copysign(e_u != 0 ? 1 : 0, e_u);
   double sign_psi = copysign(e_psi != 0 ? 1 : 0, e_psi);
@@ -66,9 +67,12 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   ei_u = integral_step * (eidot_u + eidot_u_last) / 2.0 + ei_u;
   eidot_u_last = eidot_u;
   ei_psi = integral_step * (eidot_psi + eidot_psi_last) / 2.0 + ei_psi;
+  // ei_psi = std::clamp(ei_psi, -M_PI, M_PI);
   eidot_psi_last = eidot_psi;
 
-  double edot_psi = ((3./2) * e_psi - 2. * e_psi_last + (1./2) * e_psi_last_last) / (integral_step);
+  // double edot_psi = ((3./2) * e_psi - 2. * e_psi_last + (1./2) * e_psi_last_last) / (integral_step);
+  double edot_psi = setpoint.psi_dot - s.r;
+  // edot_psi = std::clamp(edot_psi, -M_PI, M_PI);
   // PENDIENTE QUITAR ESE XD
   // edot_psi = 0;
   e_psi_last_last = e_psi_last;
@@ -85,28 +89,37 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
     alpha_u = (std::pow(std::abs(e_u0),1-p.q_u/p.p_u))/(p.tc_u*(1-p.q_u/p.p_u));
     alpha_psi = (std::pow(std::abs(e_psi0),1-p.q_psi/p.p_psi))/(p.tc_psi*(1-p.q_psi/p.p_psi));
     alpha_u = 0.0001;
-    alpha_psi = 0.1;
-    beta_psi = 0.9;
+    // alpha_psi = 0.0001;
+    alpha_psi = 0.00;
+    beta_psi = 10.;
+    // beta_psi = 0.;
     ei_u = -e_u0 / alpha_u;
     ei_psi = -e_psi0 / alpha_psi;
     if(alpha_u < 0.0001) ei_u = 0;
-    // if(alpha_psi < 0.0001) ei_psi = 0;
+    if(alpha_psi < 0.0001) ei_psi = 0;
     starting = 2;
     std::cout << "huh" << ei_u << std::endl;
     std::cout << "huhh" << alpha_psi << std::endl;
   }
 
   double s_u = e_u + alpha_u * ei_u;
+
+  // Second order sliding surface
   double s_psi = edot_psi + beta_psi * e_psi + alpha_psi * ei_psi;
+
+  // First order sliding surface
+  // double s_psi = e_psi + alpha_psi * ei_psi;
+
   // std::cout << "s_psi -> " << s_psi << "\ne_psi: " << e_psi 
   //   << "\nei_psi: " << ei_psi << "\nedot_psi: " << edot_psi 
   //   << "\nalpha_psi: " << alpha_psi
   //   << std::endl;
-  std::cout << "alpha_psi -> " << alpha_psi
-    << "\nalpha_u -> " << alpha_u
-    << std::endl;
+  // std::cout << "alpha_psi -> " << alpha_psi
+  //   << "\nalpha_u -> " << alpha_u
+  //   << std::endl;
 
   double Ka_dot_u{0}, Ka_dot_psi{0};
+  // std::cout << "adaptive: " << p.adaptive << std::endl;
   if(p.adaptive != 0){
     Ka_dot_u = std::sqrt(p.k_alpha_u) * std::sqrt(std::fabs(s_u)) 
       - std::sqrt(p.k_beta_u) * std::pow(Ka_u, 2);
@@ -129,7 +142,12 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   double ua_psi = (-Ka_psi * std::sqrt(std::abs(s_psi)) * sign_s_psi) - (Ka_psi * p.epsilon_psi * s_psi);
 
   double Tx = (setpoint.dot_u + (alpha_u * eidot_u) - f_u - ua_u) / g_u;
+
+  // Second order control output
   double Tz = (setpoint.dot_r + (beta_psi * edot_psi) + (alpha_psi * eidot_psi) - f_psi - ua_psi) / g_psi;
+
+  // First order control output
+  // double Tz = (setpoint.dot_r + (alpha_psi * eidot_psi) - f_psi - ua_psi) / g_psi;
 
   // Clamp forces
   Tx = std::clamp(Tx, -60.0, 73.0);
@@ -138,10 +156,10 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   if(starting == 1){
     Tx = 0;
     Tz = 0;
-    Ka_u = p.k_u;
+    Ka_u = 0;
     Ka_dot_last_u = 0;
 
-    Ka_psi = p.k_psi;
+    Ka_psi = 0;
     Ka_dot_last_psi = 0;
 
     ei_u = -e_u / alpha_u;
@@ -150,7 +168,7 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
     ei_psi = -e_psi / alpha_psi;
     eidot_psi_last = 0;
     edot_psi = 0;
-    e_psi_last = 0;
+
     starting = 0;
   }
 
@@ -170,6 +188,7 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   debugData.e_u = e_u;
   debugData.e_psi = e_psi;
   debugData.edot_psi = edot_psi;
+  debugData.ei_psi = eidot_psi;
   debugData.s_u = s_u;
   debugData.s_psi = s_psi;
   debugData.Ka_u = Ka_u;
