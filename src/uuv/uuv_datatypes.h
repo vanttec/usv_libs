@@ -1,5 +1,6 @@
 #include <eigen3/Eigen/Dense>
 #include <array>
+#include <iostream>
 
 #pragma once
 namespace uuv{
@@ -15,11 +16,11 @@ namespace uuv{
   // };
   
   struct UUVState{
-    Eigen::VectorXf eta{0., 0., 0., 0., 0., 0.,};
-    Eigen::VectorXf eta_dot{0., 0., 0., 0., 0., 0.,};
-    Eigen::VectorXf eta_dot_prev{0., 0., 0., 0., 0., 0.,};
-    Eigen::VectorXf nu{0., 0., 0., 0., 0., 0.,};
-    Eigen::VectorXf nu_dot{0., 0., 0., 0., 0., 0.,};
-    Eigen::VectorXf nu_dot_prev{0., 0., 0., 0., 0., 0.,};
+    Eigen::VectorXf eta;
+    Eigen::VectorXf eta_dot;
+    Eigen::VectorXf eta_dot_prev;
+    Eigen::VectorXf nu;
+    Eigen::VectorXf nu_dot;
+    Eigen::VectorXf nu_dot_prev;
   };
 }

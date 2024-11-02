@@ -11,7 +11,7 @@ public:
   UUVDynamicModel();
   UUVDynamicModel(Eigen::VectorXf);
   UUVState update(std::array<double, 6> thrusters);
-  void UUVDynamicModel::matricesUpdate();
+  void matricesUpdate();
   static double constrainAngle(double angle);
 
   /* Input forces vector */
