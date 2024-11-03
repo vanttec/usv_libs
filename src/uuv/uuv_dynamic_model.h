@@ -10,15 +10,15 @@ class UUVDynamicModel {
 public:
   UUVDynamicModel();
   UUVDynamicModel(Eigen::VectorXf);
-  UUVState update(std::array<double, 6> thrusters);
+  void update(std::array<double, 6> thrusters);
   void matricesUpdate();
   static double constrainAngle(double angle);
 
-  /* Input forces vector */
-  Eigen::VectorXf u_;
   /* Non-linear functions */
   Eigen::VectorXf f_x_;
   Eigen::MatrixXf g_x_;
+
+  UUVState state{};
 
 private:
   /* Transformation matrix */
@@ -95,8 +95,6 @@ private:
   double MAX_TORQUE_K_{100.};
   double MAX_TORQUE_M_{100.};
   double MAX_TORQUE_N_{100.};
-
-  UUVState state{};
 };
 
 

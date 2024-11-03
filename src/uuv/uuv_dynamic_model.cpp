@@ -37,7 +37,6 @@ UUVDynamicModel::UUVDynamicModel() {
   C_ = Eigen::MatrixXf::Zero(6, 6);
   D_ = Eigen::MatrixXf::Zero(6, 6);
   G_ = Eigen::MatrixXf::Zero(6, 1);
-  u_ = Eigen::MatrixXf::Zero(6, 1);
 }
 
 /*
@@ -50,27 +49,24 @@ UUVDynamicModel::UUVDynamicModel() {
     0, 0, 0, 0, 0, Izz_-N_r_dot_;
 */
 
-UUVState UUVDynamicModel::update(std::array<double, 6> t) {
-  UUVState out;
-  out = state;
+void UUVDynamicModel::update(std::array<double, 6> t) {
+  /* Input forces vector */
+  Eigen::VectorXf u_;
+  u_ = Eigen::MatrixXf::Zero(6, 1);
+
   u_ << t[0], t[1], t[2], t[3], t[4], t[5];
-  std::cout << "antes de todo nu: \n" << out.nu << std::endl;
   matricesUpdate();
   g_x_ = M_.inverse();
-  f_x_ = -M_.inverse() * (C_ * out.nu + D_ * out.nu + G_);  
+  // f_x_ = -M_.inverse() * (C_ * state.nu + D_ * state.nu + G_);  
+  f_x_ = -M_.inverse() * (C_ * state.nu + D_ * state.nu);  
 
-  out.nu_dot = f_x_ + g_x_*(u_);
-  std::cout << "\nantes: \n" << out.nu << "\ndeberia de: \n" << dt * (out.nu_dot + out.nu_dot_prev) / 2 << std::endl;
-  out.nu = dt * (out.nu_dot + out.nu_dot_prev) / 2;
-  out.nu_dot_prev = out.nu_dot;
+  state.nu_dot = f_x_ + g_x_*(u_);
+  state.nu = dt * (state.nu_dot + state.nu_dot_prev) / 2 + state.nu;
+  state.nu_dot_prev = state.nu_dot;
 
-  out.eta_dot = J_ * out.nu;
-  out.eta =  dt * (out.eta_dot + out.eta_dot_prev) / 2;
-  out.eta_dot_prev = out.eta_dot;
-
-  std::cout << "\ndespues nu: \n" << out.nu << "\neta: \n" << out.eta << std::endl;
-  state = out;
-  return out;
+  state.eta_dot = J_ * state.nu;
+  state.eta =  dt * (state.eta_dot + state.eta_dot_prev) / 2 + state.eta;
+  state.eta_dot_prev = state.eta_dot;
 }
 
 double UUVDynamicModel::constrainAngle(double angle) {
