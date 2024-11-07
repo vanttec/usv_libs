@@ -56,8 +56,12 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
                 (Iz - model.N_r_dot));
 
   double e_u = setpoint.u - s.u;
+
+  // Second order error (yaw rate)
   double e_psi = angle_dist(setpoint.psi, s.psi);
-  // e_psi = setpoint.psi - s.psi;
+
+  // First order error (heading)
+  // double e_psi = setpoint.psi - s.r;
 
   double sign_u = copysign(e_u != 0 ? 1 : 0, e_u);
   double sign_psi = copysign(e_psi != 0 ? 1 : 0, e_psi);
@@ -70,16 +74,9 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   // ei_psi = std::clamp(ei_psi, -M_PI, M_PI);
   eidot_psi_last = eidot_psi;
 
-  // double edot_psi = ((3./2) * e_psi - 2. * e_psi_last + (1./2) * e_psi_last_last) / (integral_step);
   double edot_psi = setpoint.psi_dot - s.r;
-  // edot_psi = std::clamp(edot_psi, -M_PI, M_PI);
-  // PENDIENTE QUITAR ESE XD
-  // edot_psi = 0;
   e_psi_last_last = e_psi_last;
   e_psi_last = e_psi;
-  // std::cout << "ei_psi: " << ei_psi 
-  // // << ", edot_psi: " << edot_psi 
-  // << std::endl;
 
   // TODO find how to initialize vars
   static int starting = 1;
@@ -90,8 +87,13 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
     alpha_psi = (std::pow(std::abs(e_psi0),1-p.q_psi/p.p_psi))/(p.tc_psi*(1-p.q_psi/p.p_psi));
     alpha_u = 0.0001;
     // alpha_psi = 0.0001;
-    alpha_psi = 0.00;
-    beta_psi = 10.;
+    if(p.adaptive == 1){
+      alpha_psi = 0.01;
+      beta_psi = 10.;
+    } else {
+      alpha_psi = 0.001;
+      beta_psi = 10.;
+    }
     // beta_psi = 0.;
     ei_u = -e_u0 / alpha_u;
     ei_psi = -e_psi0 / alpha_psi;
@@ -119,8 +121,9 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   //   << std::endl;
 
   double Ka_dot_u{0}, Ka_dot_psi{0};
-  // std::cout << "adaptive: " << p.adaptive << std::endl;
-  if(p.adaptive != 0){
+  // This is just so i dont havee to add another parameter, TODO go back to the first one
+  // if(p.adaptive != 0){
+  if(1. != 0){
     Ka_dot_u = std::sqrt(p.k_alpha_u) * std::sqrt(std::fabs(s_u)) 
       - std::sqrt(p.k_beta_u) * std::pow(Ka_u, 2);
     Ka_dot_psi = std::sqrt(p.k_alpha_psi) * std::sqrt(std::fabs(s_psi)) 
@@ -167,7 +170,7 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
 
     ei_psi = -e_psi / alpha_psi;
     eidot_psi_last = 0;
-    edot_psi = 0;
+    // edot_psi = 0;
 
     starting = 0;
   }
@@ -187,7 +190,7 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
 
   debugData.e_u = e_u;
   debugData.e_psi = e_psi;
-  debugData.edot_psi = edot_psi;
+  // debugData.edot_psi = edot_psi;
   debugData.ei_psi = eidot_psi;
   debugData.s_u = s_u;
   debugData.s_psi = s_psi;
