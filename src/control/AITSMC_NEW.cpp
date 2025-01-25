@@ -50,6 +50,9 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
     Xuu = -70.92;
   }
 
+  double sideslip_angle = std::asin(s.v / (0.001 + std::hypot(s.u, s.v)));
+  sideslip_angle = 0;
+
   double Nr = (-0.52) * std::hypot(s.u, s.v);
   double f_u = (((m - model.Y_v_dot) * s.v * s.r + (Xuu * std::abs(s.u) * s.u + Xu * s.u)) / (m - model.X_u_dot));
   double f_psi = (((-model.X_u_dot + model.Y_v_dot) * s.u * s.v + (model.Nrr * std::abs(s.r) * s.r + Nr * s.r)) /
@@ -58,7 +61,11 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   double e_u = setpoint.u - s.u;
 
   // Second order error (yaw rate)
-  double e_psi = angle_dist(setpoint.psi, s.psi);
+  // double e_psi = angle_dist(setpoint.psi, s.psi);
+  // Same but including 
+  double e_psi = angle_dist(setpoint.psi + sideslip_angle, s.psi);
+  std::cout << "SIDESLIP: " << sideslip_angle << std::endl;
+  // TODO: PRINT THE SIDESLIP VARIABLE, DO FURTHER DEBUGGING TO KNOW WHY EVERYTHING F'S UP WHEN THE BOAT GOES FAST 
 
   // First order error (heading)
   // double e_psi = setpoint.psi - s.r;
@@ -91,7 +98,7 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
       alpha_psi = 0.01;
       beta_psi = 10.;
     } else {
-      alpha_psi = 0.001;
+      alpha_psi = 0.01;
       beta_psi = 10.;
     }
     // beta_psi = 0.;
@@ -178,8 +185,8 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   double port_t = (Tx / 2.0) + (Tz / B);
   double starboard_t = (Tx / (2.0 * c)) - (Tz / (B * c));
 
-  port_t = std::clamp(port_t, -30.0, 36.5);
-  starboard_t = std::clamp(starboard_t, -30.0, 36.5);
+  port_t = std::clamp(port_t, -60.0, 73.0) / 2.0;
+  starboard_t = std::clamp(starboard_t, -60.0, 73.0) / 2.0;
 
   ControllerOutput out{};
   out.left_thruster= port_t;

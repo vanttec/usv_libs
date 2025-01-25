@@ -51,10 +51,10 @@ public:
 private:
   AITSMCNEWParams p;
 
-  double m = 30; // Mass
+  double m = 40; // Mass
   double Iz = 4.1;
   double B = 0.41;
-  double c = 0.78;
+  double c = 1.;
 
   static constexpr double integral_step{0.01};
   double eidot_u_last{0}, eidot_psi_last{0};

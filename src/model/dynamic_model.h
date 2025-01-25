@@ -40,7 +40,7 @@ private:
   constexpr static const double m = 30;
   constexpr static const double Iz = 4.1;
   constexpr static const double B = 0.41;
-  constexpr static const double c = 0.78;
+  constexpr static const double c = 1.0;
   constexpr static const double integral_step = 0.01;
 
   Eigen::Vector3f upsilon = Eigen::Vector3f::Zero();
