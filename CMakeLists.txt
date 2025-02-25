@@ -22,6 +22,7 @@ set(USV_LIBS_SRC
         src/control/ASMC.cpp 
         src/control/AITSMC.cpp 
         src/control/AITSMC_NEW.cpp 
+        src/control/PID.cpp
         src/model/dynamic_model.cpp 
         src/utils/ControllerUtils.cpp 
         src/perturbances/wind_and_waves.cpp)
