@@ -160,8 +160,8 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   // double Tz = (setpoint.dot_r + (alpha_psi * eidot_psi) - f_psi - ua_psi) / g_psi;
 
   // Clamp forces
-  Tx = std::clamp(Tx, -60.0, 73.0);
-  Tz = std::clamp(Tz, -14.0, 14.0);
+  // Tx = std::clamp(Tx, -60.0, 73.0);
+  // Tz = std::clamp(Tz, -14.0, 14.0);
 
   if(starting == 1){
     Tx = 0;
@@ -185,8 +185,8 @@ ControllerOutput AITSMC_NEW::update(const vanttec::ControllerState &s, const AIT
   double port_t = (Tx / 2.0) + (Tz / B);
   double starboard_t = (Tx / (2.0 * c)) - (Tz / (B * c));
 
-  port_t = std::clamp(port_t, -60.0, 73.0) / 2.0;
-  starboard_t = std::clamp(starboard_t, -60.0, 73.0) / 2.0;
+  port_t = std::clamp(port_t, -60.0, 73.0);
+  starboard_t = std::clamp(starboard_t, -60.0, 73.0);
 
   ControllerOutput out{};
   out.left_thruster= port_t;
