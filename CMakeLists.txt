@@ -44,11 +44,12 @@ target_link_libraries(usv_libs Eigen3::Eigen)
 # )
 
 # Unit test
-# include(GoogleTest)
-# file(GLOB_RECURSE USV_TEST_SOURCES test/*.cpp)
-# add_executable(USV_Tests ${USV_TEST_SOURCES} ${USV_LIBS_SRC})
-# target_link_libraries(USV_Tests 
-        # GTest::gtest_main 
-        # Eigen3::Eigen)
-# target_include_directories(USV_Tests PRIVATE src/)
-# gtest_discover_tests(USV_Tests)
+find_package(GTest REQUIRED)
+include(GoogleTest)
+file(GLOB_RECURSE USV_TEST_SOURCES test/*.cpp)
+add_executable(USV_Tests ${USV_TEST_SOURCES} ${USV_LIBS_SRC})
+target_link_libraries(USV_Tests 
+        GTest::gtest_main 
+        Eigen3::Eigen)
+target_include_directories(USV_Tests PRIVATE src/)
+gtest_discover_tests(USV_Tests)
